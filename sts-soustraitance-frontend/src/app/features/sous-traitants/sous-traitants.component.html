@@ -1,0 +1,68 @@
+<h1>Sous-traitants</h1>
+
+<div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="margin:0;">Liste des sous-traitants</h3>
+    <button class="btn btn-primary" (click)="openCreateForm()"
+            *ngIf="authService.hasRole('ADMINISTRATEUR')">
+      + Nouveau sous-traitant
+    </button>
+  </div>
+
+  <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100);">
+    <div class="form-field">
+      <label>Raison sociale</label>
+      <input type="text" formControlName="raisonSociale">
+    </div>
+    <div class="form-field">
+      <label>Telephone</label>
+      <input type="text" formControlName="telephone">
+    </div>
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" formControlName="email">
+    </div>
+    <div class="form-field">
+      <label>Statut</label>
+      <select formControlName="statut">
+        <option value="ACTIF">ACTIF</option>
+        <option value="INACTIF">INACTIF</option>
+        <option value="SUSPENDU">SUSPENDU</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Enregistrer</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Raison sociale</th>
+        <th>Telephone</th>
+        <th>Email</th>
+        <th>Statut</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="loading"><td colspan="6" class="empty-row">Chargement...</td></tr>
+      <tr *ngIf="!loading && items.length === 0"><td colspan="6" class="empty-row">Aucun sous-traitant enregistre.</td></tr>
+      <tr *ngFor="let item of items">
+        <td class="num">{{ item.idSousTraitant }}</td>
+        <td>{{ item.raisonSociale }}</td>
+        <td>{{ item.telephone || '—' }}</td>
+        <td>{{ item.email || '—' }}</td>
+        <td><span class="badge" [ngClass]="badgeClass(item.statut)">{{ item.statut }}</span></td>
+        <td class="actions" *ngIf="authService.hasRole('ADMINISTRATEUR')">
+          <button class="btn btn-secondary btn-sm" (click)="openEditForm(item)">Modifier</button>
+          <button class="btn btn-danger btn-sm" (click)="remove(item.idSousTraitant!)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

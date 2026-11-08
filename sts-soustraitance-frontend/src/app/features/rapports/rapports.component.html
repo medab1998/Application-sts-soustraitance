@@ -1,0 +1,61 @@
+<h1>Rapports Sous-traitant</h1>
+
+<div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="margin:0;">Rapports d'avancement</h3>
+    <button class="btn btn-primary" (click)="openCreateForm()">+ Nouveau rapport</button>
+  </div>
+
+  <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100);">
+    <div class="form-field">
+      <label>Contrat</label>
+      <select formControlName="idContrat">
+        <option [ngValue]="null" disabled>Choisir un contrat</option>
+        <option *ngFor="let c of contrats" [ngValue]="c.idContrat">{{ c.numeroContrat }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Date du rapport</label>
+      <input type="date" formControlName="dateRapport">
+    </div>
+    <div class="form-field full">
+      <label>Description des travaux</label>
+      <textarea formControlName="descriptionTravaux" rows="2"></textarea>
+    </div>
+    <div class="form-field">
+      <label>Pourcentage d'avancement (%)</label>
+      <input type="number" min="0" max="100" formControlName="pourcentageAvancement">
+    </div>
+    <div class="form-field">
+      <label>Quantite realisee</label>
+      <input type="number" formControlName="quantiteRealisee">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Soumettre le rapport</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>Contrat</th><th>Date</th><th>Avancement</th><th>Statut</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="loading"><td colspan="6" class="empty-row">Chargement...</td></tr>
+      <tr *ngIf="!loading && items.length === 0"><td colspan="6" class="empty-row">Aucun rapport enregistre.</td></tr>
+      <tr *ngFor="let item of items">
+        <td class="num">{{ item.idRapport }}</td>
+        <td>{{ contratNom(item.contrat.idContrat) }}</td>
+        <td>{{ item.dateRapport }}</td>
+        <td class="num">{{ item.pourcentageAvancement }}%</td>
+        <td><span class="badge" [ngClass]="badgeClass(item.statut)">{{ item.statut }}</span></td>
+        <td class="actions" *ngIf="authService.hasRole('CHEF_PROJET', 'ADMINISTRATEUR') && item.statut === 'SOUMIS'">
+          <button class="btn btn-primary btn-sm" (click)="changerStatut(item, 'APPROUVE')">Approuver</button>
+          <button class="btn btn-danger btn-sm" (click)="changerStatut(item, 'REJETE')">Rejeter</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

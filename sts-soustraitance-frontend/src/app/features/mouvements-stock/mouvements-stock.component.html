@@ -1,0 +1,76 @@
+<h1>Mouvements de stock</h1>
+<p style="color: var(--slate-500); margin-top: -0.5rem;">
+  AFFECTATION / RETOUR augmentent la quantite disponible, CONSOMMATION la diminue (verification anti-negatif cote serveur).
+</p>
+
+<div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+<div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="margin:0;">Historique des mouvements</h3>
+    <button class="btn btn-primary" (click)="openCreateForm()">+ Nouveau mouvement</button>
+  </div>
+
+  <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100);">
+    <div class="form-field">
+      <label>Date du mouvement</label>
+      <input type="date" formControlName="dateMouvement">
+    </div>
+    <div class="form-field">
+      <label>Type</label>
+      <select formControlName="type">
+        <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Sous-traitant</label>
+      <select formControlName="idSousTraitant">
+        <option [ngValue]="null" disabled>Choisir un sous-traitant</option>
+        <option *ngFor="let s of sousTraitants" [ngValue]="s.idSousTraitant">{{ s.raisonSociale }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Produit</label>
+      <select formControlName="idProduit">
+        <option [ngValue]="null" disabled>Choisir un produit</option>
+        <option *ngFor="let p of produits" [ngValue]="p.idProduit">{{ p.designation }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Stock concerne</label>
+      <select formControlName="idStock">
+        <option [ngValue]="null" disabled>Choisir un stock</option>
+        <option *ngFor="let s of stocks" [ngValue]="s.idStock">
+          Stock #{{ s.idStock }} — {{ produitNom(s.produit.idProduit) }} (dispo: {{ s.quantiteActuelle }})
+        </option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Quantite</label>
+      <input type="number" min="1" formControlName="quantite">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Enregistrer le mouvement</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>Date</th><th>Type</th><th>Sous-traitant</th><th>Produit</th><th>Quantite</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="loading"><td colspan="6" class="empty-row">Chargement...</td></tr>
+      <tr *ngIf="!loading && items.length === 0"><td colspan="6" class="empty-row">Aucun mouvement enregistre.</td></tr>
+      <tr *ngFor="let item of items">
+        <td class="num">{{ item.idMouvement }}</td>
+        <td>{{ item.dateMouvement }}</td>
+        <td><span class="badge" [ngClass]="typeClass(item.type)">{{ item.type }}</span></td>
+        <td>{{ sousTraitantNom(item.sousTraitant.idSousTraitant) }}</td>
+        <td>{{ produitNom(item.produit.idProduit) }}</td>
+        <td class="num">{{ item.quantite }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

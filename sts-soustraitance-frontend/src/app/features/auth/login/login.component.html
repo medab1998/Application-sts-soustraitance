@@ -1,0 +1,22 @@
+<div class="auth-container">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>STS-LINK</h1>
+    <p class="subtitle">Module Gestion Sous-traitance</p>
+
+    <label>Nom d'utilisateur</label>
+    <input type="text" formControlName="username" placeholder="admin">
+
+    <label>Mot de passe</label>
+    <input type="password" formControlName="password" placeholder="••••••••">
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <button type="submit" [disabled]="form.invalid || loading">
+      {{ loading ? 'Connexion...' : 'Se connecter' }}
+    </button>
+
+    <p class="switch">
+      Pas encore de compte ? <a routerLink="/register">S'inscrire</a>
+    </p>
+  </form>
+</div>

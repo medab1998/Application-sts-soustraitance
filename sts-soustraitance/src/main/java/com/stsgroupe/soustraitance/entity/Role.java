@@ -1,0 +1,13 @@
+package com.stsgroupe.soustraitance.entity;
+
+public enum Role {
+    ADMINISTRATEUR,
+    CHEF_PROJET,
+    CONDUCTEUR_TRAVAUX,
+    TECHNICIEN,
+    COMMERCIAL,
+    SOUS_TRAITANT,
+    RESPONSABLE_ACHAT,
+    RESPONSABLE_FACTURATION,
+    RESPONSABLE_REGLEMENT
+}

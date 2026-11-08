@@ -1,0 +1,12 @@
+<ng-container *ngIf="authService.isLoggedIn(); else noSidebar">
+  <div class="app-shell">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</ng-container>
+
+<ng-template #noSidebar>
+  <router-outlet></router-outlet>
+</ng-template>

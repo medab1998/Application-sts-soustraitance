@@ -1,0 +1,54 @@
+<h1>Stocks</h1>
+<p style="color: var(--slate-500); margin-top: -0.5rem;">
+  Les quantites sont mises a jour automatiquement lors des mouvements de stock (voir menu "Mouvements de stock").
+</p>
+
+<div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="margin:0;">Etat du stock</h3>
+    <button class="btn btn-primary" (click)="openCreateForm()">+ Initialiser un stock</button>
+  </div>
+
+  <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100);">
+    <div class="form-field">
+      <label>Produit</label>
+      <select formControlName="idProduit">
+        <option [ngValue]="null" disabled>Choisir un produit</option>
+        <option *ngFor="let p of produits" [ngValue]="p.idProduit">{{ p.designation }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Quantite actuelle</label>
+      <input type="number" formControlName="quantiteActuelle">
+    </div>
+    <div class="form-field">
+      <label>Seuil minimum (alerte)</label>
+      <input type="number" formControlName="stockMinimum">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Enregistrer</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Produit</th><th>Quantite actuelle</th><th>Seuil minimum</th><th>Etat</th></tr></thead>
+    <tbody>
+      <tr *ngIf="loading"><td colspan="5" class="empty-row">Chargement...</td></tr>
+      <tr *ngIf="!loading && items.length === 0"><td colspan="5" class="empty-row">Aucun stock initialise.</td></tr>
+      <tr *ngFor="let item of items">
+        <td class="num">{{ item.idStock }}</td>
+        <td>{{ produitNom(item.produit.idProduit) }}</td>
+        <td class="num">{{ item.quantiteActuelle }}</td>
+        <td class="num">{{ item.stockMinimum }}</td>
+        <td>
+          <span class="badge" [ngClass]="isAlerte(item) ? 'badge-danger' : 'badge-success'">
+            {{ isAlerte(item) ? 'Stock bas' : 'OK' }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

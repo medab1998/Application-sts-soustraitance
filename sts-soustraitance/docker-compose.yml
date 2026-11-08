@@ -1,0 +1,38 @@
+version: "3.8"
+
+# Lance uniquement la base de donnees PostgreSQL.
+# Le backend Spring Boot continue de tourner dans IntelliJ (hors Docker).
+#
+# Demarrer :   docker compose up -d
+# Arreter :    docker compose down
+# Tout effacer (reinitialiser la base) : docker compose down -v
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sts_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sts_soustraitance
+      POSTGRES_USER: sts_user
+      POSTGRES_PASSWORD: sts_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - sts_postgres_data:/var/lib/postgresql/data
+
+  # Interface web optionnelle pour visualiser la base (equivalent de la console H2)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sts_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@stsgroupe.tn
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  sts_postgres_data:

@@ -1,0 +1,30 @@
+<div class="auth-container">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>STS-<span>LINK</span></h1>
+    <p class="subtitle">Creer un compte</p>
+
+    <label>Nom d'utilisateur</label>
+    <input type="text" formControlName="username" placeholder="ex: soustraitant1">
+
+    <label>Email</label>
+    <input type="email" formControlName="email" placeholder="nom@exemple.tn">
+
+    <label>Mot de passe</label>
+    <input type="password" formControlName="password" placeholder="6 caracteres minimum">
+
+    <label>Role</label>
+    <select formControlName="role">
+      <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+    </select>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <button type="submit" [disabled]="form.invalid || loading">
+      {{ loading ? 'Creation...' : 'Creer le compte' }}
+    </button>
+
+    <p class="switch">
+      Deja un compte ? <a routerLink="/login">Se connecter</a>
+    </p>
+  </form>
+</div>

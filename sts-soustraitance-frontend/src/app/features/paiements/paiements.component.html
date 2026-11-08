@@ -1,0 +1,69 @@
+<h1>Paiements Sous-traitant</h1>
+<p style="color: var(--slate-500); margin-top: -0.5rem;">
+  Le montant net (montant brut − retenue) est recalcule et fige par le serveur a l'enregistrement.
+</p>
+
+<div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="margin:0;">Liste des paiements</h3>
+    <button class="btn btn-primary" (click)="openCreateForm()">+ Nouveau paiement</button>
+  </div>
+
+  <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100);">
+    <div class="form-field full">
+      <label>Rapport approuve concerne</label>
+      <select formControlName="idRapport">
+        <option [ngValue]="null" disabled>Choisir un rapport approuve</option>
+        <option *ngFor="let r of rapports" [ngValue]="r.idRapport">{{ rapportLabel(r.idRapport!) }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Date de paiement</label>
+      <input type="date" formControlName="datePaiement">
+    </div>
+    <div class="form-field">
+      <label>Mode de paiement</label>
+      <select formControlName="modePaiement">
+        <option value="VIREMENT">VIREMENT</option>
+        <option value="CHEQUE">CHEQUE</option>
+        <option value="ESPECES">ESPECES</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Montant brut (TND)</label>
+      <input type="number" step="0.01" formControlName="montantBrut">
+    </div>
+    <div class="form-field">
+      <label>Retenue (TND)</label>
+      <input type="number" step="0.01" formControlName="retenue">
+    </div>
+    <div class="form-field full" style="background: var(--slate-100); padding: 0.75rem; border-radius: var(--radius);">
+      Montant net previsionnel : <strong>{{ montantNetPrevisionnel | number:'1.2-2' }} TND</strong>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Enregistrer</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Date</th><th>Montant brut</th><th>Retenue</th><th>Montant net</th><th>Mode</th><th></th></tr></thead>
+    <tbody>
+      <tr *ngIf="loading"><td colspan="7" class="empty-row">Chargement...</td></tr>
+      <tr *ngIf="!loading && items.length === 0"><td colspan="7" class="empty-row">Aucun paiement enregistre.</td></tr>
+      <tr *ngFor="let item of items">
+        <td class="num">{{ item.idPaiement }}</td>
+        <td>{{ item.datePaiement }}</td>
+        <td class="num">{{ item.montantBrut | number:'1.2-2' }}</td>
+        <td class="num">{{ item.retenue | number:'1.2-2' }}</td>
+        <td class="num"><strong>{{ item.montantNet | number:'1.2-2' }}</strong> TND</td>
+        <td>{{ item.modePaiement || '—' }}</td>
+        <td class="actions">
+          <button class="btn btn-danger btn-sm" (click)="remove(item.idPaiement!)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

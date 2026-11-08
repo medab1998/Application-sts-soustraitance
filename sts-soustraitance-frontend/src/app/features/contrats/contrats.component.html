@@ -1,0 +1,71 @@
+<h1>Contrats</h1>
+
+<div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="margin:0;">Liste des contrats</h3>
+    <button class="btn btn-primary" (click)="openCreateForm()">+ Nouveau contrat</button>
+  </div>
+
+  <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100);">
+    <div class="form-field">
+      <label>Numero de contrat</label>
+      <input type="text" formControlName="numeroContrat" placeholder="CT-2026-001">
+    </div>
+    <div class="form-field">
+      <label>Sous-traitant</label>
+      <select formControlName="idSousTraitant">
+        <option [ngValue]="null" disabled>Choisir un sous-traitant</option>
+        <option *ngFor="let s of sousTraitants" [ngValue]="s.idSousTraitant">{{ s.raisonSociale }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Projet</label>
+      <select formControlName="idProjet">
+        <option [ngValue]="null" disabled>Choisir un projet</option>
+        <option *ngFor="let p of projets" [ngValue]="p.idProjet">{{ p.nom }}</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Date debut</label>
+      <input type="date" formControlName="dateDebut">
+    </div>
+    <div class="form-field">
+      <label>Date fin</label>
+      <input type="date" formControlName="dateFin">
+    </div>
+    <div class="form-field">
+      <label>Montant total (TND)</label>
+      <input type="number" step="0.01" formControlName="montantTotal">
+    </div>
+    <div class="form-field">
+      <label>Retenue de garantie (TND)</label>
+      <input type="number" step="0.01" formControlName="retenueGarantie">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Enregistrer</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>N° Contrat</th><th>Sous-traitant</th><th>Projet</th><th>Montant</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="loading"><td colspan="6" class="empty-row">Chargement...</td></tr>
+      <tr *ngIf="!loading && items.length === 0"><td colspan="6" class="empty-row">Aucun contrat enregistre.</td></tr>
+      <tr *ngFor="let item of items">
+        <td class="num">{{ item.idContrat }}</td>
+        <td>{{ item.numeroContrat }}</td>
+        <td>{{ sousTraitantNom(item.sousTraitant.idSousTraitant) }}</td>
+        <td>{{ projetNom(item.projet.idProjet) }}</td>
+        <td class="num">{{ item.montantTotal | number:'1.2-2' }} TND</td>
+        <td class="actions">
+          <button class="btn btn-danger btn-sm" (click)="remove(item.idContrat!)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

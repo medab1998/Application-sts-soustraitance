@@ -1,0 +1,38 @@
+<h1>Tableau de bord</h1>
+<p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+  Bienvenue, {{ authService.currentUsername() }} — vue d'ensemble du module Sous-traitance.
+</p>
+
+<div *ngIf="loading" style="color: var(--slate-500);">Chargement des indicateurs...</div>
+
+<div class="kpi-grid" *ngIf="!loading">
+  <div class="kpi-card">
+    <div class="kpi-value">{{ kpis.sousTraitants }}</div>
+    <div class="kpi-label">Sous-traitants</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ kpis.projets }}</div>
+    <div class="kpi-label">Projets</div>
+  </div>
+  <div class="kpi-card" style="border-left-color: var(--danger);">
+    <div class="kpi-value">{{ kpis.produitsEnAlerte }}</div>
+    <div class="kpi-label">Produits en alerte stock</div>
+  </div>
+  <div class="kpi-card" style="border-left-color: var(--warning);">
+    <div class="kpi-value">{{ kpis.rapportsEnAttente }}</div>
+    <div class="kpi-label">Rapports en attente</div>
+  </div>
+  <div class="kpi-card" style="border-left-color: var(--info);">
+    <div class="kpi-value">{{ kpis.reclamationsOuvertes }}</div>
+    <div class="kpi-label">Reclamations HSE</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Acces rapides</h3>
+  <p style="color: var(--slate-500);">
+    Utilisez le menu a gauche pour gerer les sous-traitants, les contrats, le stock, les rapports d'avancement,
+    les reclamations HSE et les paiements. L'acces a chaque module depend de votre role
+    (<strong>{{ authService.currentRole() }}</strong>).
+  </p>
+</div>

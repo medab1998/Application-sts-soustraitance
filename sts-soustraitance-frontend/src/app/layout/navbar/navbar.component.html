@@ -1,0 +1,20 @@
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">STS-<span>LINK</span></div>
+    <div class="tagline">Gestion Sous-traitance</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a *ngFor="let item of visibleItems"
+       [routerLink]="item.path"
+       routerLinkActive="active">
+      <span>{{ item.icon }}</span> {{ item.label }}
+    </a>
+  </nav>
+
+  <div class="sidebar-user">
+    Connecte : <strong>{{ authService.currentUsername() }}</strong>
+    <div class="role-badge">{{ authService.currentRole() }}</div>
+    <button (click)="logout()">Se deconnecter</button>
+  </div>
+</aside>
